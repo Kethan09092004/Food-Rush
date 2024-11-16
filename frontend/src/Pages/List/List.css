@@ -1,0 +1,44 @@
+.list-table {
+    max-height: 600px; /* Set your desired height */
+    overflow-y: auto;  /* Enables vertical scrolling */
+    overflow-x: auto;  /* Enables horizontal scrolling, if needed */
+    border: 1px solid #cacaca;
+}
+
+.list-table-format {
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 1fr 1fr 0.5fr;
+    align-items: center;
+    gap: 40px;
+    
+    padding: 12px 15px;
+    font-size: 13px;
+}
+
+.list-table-format.title {
+    background-color: #a50b0b;
+    position: sticky; /* Keep title row fixed at the top */
+    top: 0;
+    z-index: 1;
+}
+.list {
+    position: fixed;
+    top: 60px;
+    
+    width: 100%; /* Full width, adjust as needed */
+    background-color: white; /* Optional: set a background color to cover content behind */
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.list-table-format img {
+    width: 60px;
+}
+
+@media (max-width: 600px) {
+    .list-table-format {
+        grid-template-columns: 2fr 2fr 2fr 2fr;
+    }
+    .list-table-format.title {
+        display: none;
+    }
+}
