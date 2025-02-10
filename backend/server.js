@@ -21,7 +21,7 @@ const __dirname = path.resolve();
 // CORS Configuration
 app.use(
   cors({
-    origin: ["http://localhost:5174"], // Add additional allowed origins if needed
+    origin: ["https://food-rush-7571.onrender.com/"], // Add additional allowed origins if needed
     credentials: true,
   })
 );
