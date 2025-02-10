@@ -8,6 +8,16 @@
     width: 100%;
     border-radius: 15px 15px 0px 0px;
 }
+.add-image{
+    position: absolute;
+   
+    margin-top: 110px;
+    margin-left: -30px;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    width: 30px;
+}
+
 .food-item-info{
 
     padding: 20px;

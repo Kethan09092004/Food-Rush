@@ -2,7 +2,7 @@ import { assets } from "../../assets/frontend_assets/assets";
 import "./FoodItem.css";
 import { useContext } from "react";
 import { StoreContext } from "../../StoreContext/StoreContext";
-
+import addimage from "./addimage.jpeg";
 const FoodItem = ({ id, name, price, description, image }) => {
   // const [itemCount, setItemCount] = useState(0);
   const { cartItems, addToCart, removeFromCart, url } =
@@ -17,7 +17,8 @@ const FoodItem = ({ id, name, price, description, image }) => {
         />
         {!cartItems[id] ? (
           <img
-            className="add"
+            className="add-image"
+            src={addimage}
             onClick={() => {
               addToCart(id);
             }}

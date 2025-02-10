@@ -27,8 +27,13 @@ const loginUser = async (req, res) => {
 /////////////////////////////////////////////////////////////////////
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET) ;
+  if (!process.env.JWT_SECRET) {
+    console.error("JWT_SECRET is missing in environment variables!");
+    throw new Error("JWT_SECRET is not set.");
+  }
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
+
 
 ////////////////////////////////////////////////////////////////////
 
@@ -37,13 +42,13 @@ const registerUser = async (req, res) => {
   try {
     const exist = await userModel.findOne({ email });
     if (exist) {
-      return res.json({ success: false, message: "User Already Exist" });
+      return res.json({ success: false, message: "User Already Exists" });
     }
     if (!validator.isEmail(email)) {
       return res.json({ success: false, message: "Please Enter Valid Email" });
     }
     if (password.length < 8) {
-      res.json({ success: false, message: "PLease Enter Strong Password" });
+      return res.json({ success: false, message: "Please Enter Strong Password" }); 
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -57,10 +62,12 @@ const registerUser = async (req, res) => {
 
     const user = await newUser.save();
     const token = createToken(user._id);
-    res.json({ success: true, token });
+    
+    return res.json({ success: true, token }); 
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error" });
+    return res.json({ success: false, message: "Error" }); 
   }
 };
+
 export { loginUser, registerUser };

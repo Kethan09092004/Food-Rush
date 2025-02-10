@@ -17,7 +17,7 @@ const placeOrder = async (req, res) => {
     await newOrder.save();
     await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
 
-    const line_items = req.body.item.map((item,) => ({
+    const line_items = req.body.items.map((item) => ({
       price_data: {
         currency: "usd",
         product_data: {
@@ -27,6 +27,7 @@ const placeOrder = async (req, res) => {
       },
       quantity: item.quantity,
     }));
+    
 
     line_items.push({
       price_data: {

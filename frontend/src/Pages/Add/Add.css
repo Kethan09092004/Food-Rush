@@ -1,9 +1,12 @@
 .add {
-  width: 70%;
+  width: 90%;
   margin-left: max(5vw, 25px);
-  color: #6d6d6d;
+  color: #c5c3c3;
   font-size: 16px;
-  margin-top: 50px;
+  background-color: white;
+  object-fit: cover;
+  margin-top: 60px;
+  ;
 }
 .add form {
   display: flex;
