@@ -31,7 +31,7 @@ const createToken = (id) => {
     console.error("JWT_SECRET is missing in environment variables!");
     throw new Error("JWT_SECRET is not set.");
   }
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 

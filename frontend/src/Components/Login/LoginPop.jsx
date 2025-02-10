@@ -3,11 +3,11 @@ import "./LoginPop.css";
 import { useContext, useState } from "react";
 import assets from "../../assets/frontend_assets/cross_icon.png";
 import { StoreContext } from "../../StoreContext/StoreContext";
-import axios from "axios"
-const LoginPop = ({ setShowLogin }) => {
-  const { url,setToken } = useContext(StoreContext);
+import axios from "axios";
 
-  const [currState, setcurrState] = useState("Login");
+const LoginPop = ({ setShowLogin }) => {
+  const { url, setToken } = useContext(StoreContext);
+  const [currState, setCurrState] = useState("Login");
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -15,30 +15,30 @@ const LoginPop = ({ setShowLogin }) => {
   });
 
   const onChangeHandler = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setData((data) => ({ ...data, [name]: value }));
+    const { name, value } = event.target;
+    setData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-
   const onLogin = async (event) => {
-    
     event.preventDefault();
-    let newUrl = url;
-    if (currState === "Login") {
-      newUrl += "/api/user/login";
-    } else {
-      newUrl += "/api/user/register";
-    }
 
-    const response = await axios.post(newUrl,data);
+    let endpoint = currState === "Login" ? "/api/user/login" : "/api/user/register";
 
-    if(response.data.success){
-      setToken(response.data.token);
-      localStorage.setItem("token",response.data.token);
-      setShowLogin(false)
-    }else{
-      alert(response.data.message)
+    try {
+      const response = await axios.post(`${url}${endpoint}`, data, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.data.success) {
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+        setShowLogin(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Login/Register Error:", error);
+      alert(error.response?.data?.message || "Something went wrong!");
     }
   };
 
@@ -47,12 +47,10 @@ const LoginPop = ({ setShowLogin }) => {
       <form onSubmit={onLogin} className="container">
         <div className="title">
           <h2>{currState}</h2>
-          <img onClick={() => setShowLogin(false)} src={assets} alt="" />
+          <img onClick={() => setShowLogin(false)} src={assets} alt="Close" />
         </div>
         <div className="inputs">
-          {currState === "Login" ? (
-            <></>
-          ) : (
+          {currState === "Sign Up" && (
             <input
               name="name"
               onChange={onChangeHandler}
@@ -62,7 +60,6 @@ const LoginPop = ({ setShowLogin }) => {
               required
             />
           )}
-
           <input
             name="email"
             onChange={onChangeHandler}
@@ -79,23 +76,19 @@ const LoginPop = ({ setShowLogin }) => {
             placeholder="Password"
             required
           />
-          
         </div>
-        <button type='submit'>
-          {currState === "Sign Up" ? "Create Account" : "Login"}
-        </button>
-
-        {currState === "Login" ? (
-          <p>
-            Create a New Account?{" "}
-            <span onClick={() => setcurrState("Sign Up")}>Click Here</span>
-          </p>
-        ) : (
-          <p>
-            Already Have an account?{" "}
-            <span onClick={() => setcurrState("Login")}>Login Here</span>
-          </p>
-        )}
+        <button type="submit">{currState === "Sign Up" ? "Create Account" : "Login"}</button>
+        <p>
+          {currState === "Login" ? (
+            <>
+              Create a New Account? <span onClick={() => setCurrState("Sign Up")}>Click Here</span>
+            </>
+          ) : (
+            <>
+              Already Have an account? <span onClick={() => setCurrState("Login")}>Login Here</span>
+            </>
+          )}
+        </p>
       </form>
     </div>
   );
