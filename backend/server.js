@@ -21,8 +21,10 @@ const __dirname = path.resolve();
 // CORS Configuration
 app.use(
   cors({
-    origin: ["https://food-rush-7571.onrender.com/"], // Add additional allowed origins if needed
-    credentials: true,
+    origin: ["http://localhost:5174", "https://food-rush-7571.onrender.com"], // Allow local & deployed frontend
+    credentials: true, // Allow cookies/auth headers
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow these methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
   })
 );
 
