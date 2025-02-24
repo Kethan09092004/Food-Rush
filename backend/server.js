@@ -7,9 +7,11 @@ import foodRouter from "./routes/foodRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import cartRouter from "./routes/cartRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
+import job from "./crons/cron.js";
 
 dotenv.config();
 connectDb();
+job.start();
 
 const app = express();
 const PORT = process.env.PORT || 4000;

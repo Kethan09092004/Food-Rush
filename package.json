@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "NODE_ENV=development node backend/server.js",
     "start": "set NODE_ENV=production&& node backend/server.js",
-     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "cron": "^4.0.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
