@@ -24,9 +24,13 @@ app.use(
     origin: ["http://localhost:5174", "https://food-rush-7571.onrender.com"], // Allow local & deployed frontend
     credentials: true, // Allow cookies/auth headers
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow these methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
+    allowedHeaders: ["Content-Type", "Authorization", "token"], // Include 'token' header
   })
 );
+
+// Explicitly handle preflight requests
+app.options("*", cors());
+
 
 // Routes
 app.use("/api/food", foodRouter);

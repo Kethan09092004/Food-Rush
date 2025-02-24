@@ -1,21 +1,31 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
-
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5174";
+  const frontend_url = "http://localhost:4000";
   try {
+    console.log("hii")
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ success: false, message: "Unauthorized: No user ID found" });
+    }
+
+    const userId = req.user.id; // Extract userId from authenticated request
+
     const newOrder = new orderModel({
-      userId: req.body.userId,
+      userId, // Use extracted userId
       items: req.body.items,
       amount: req.body.amount,
       address: req.body.address,
     });
+
     await newOrder.save();
-    await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+    await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
     const line_items = req.body.items.map((item) => ({
       price_data: {
@@ -27,7 +37,6 @@ const placeOrder = async (req, res) => {
       },
       quantity: item.quantity,
     }));
-    
 
     line_items.push({
       price_data: {
@@ -39,57 +48,52 @@ const placeOrder = async (req, res) => {
       },
       quantity: 1,
     });
+
     const session = await stripe.checkout.sessions.create({
-      line_items: line_items,
+      line_items,
       mode: "payment",
       success_url: `${frontend_url}/complete`,
       cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
     });
+
     res.json({ success: true, session_url: session.url });
   } catch (error) {
-    console.log(error);
-    res.json({
-      success: false,
-      message: "Error",
-    });
+    console.error("Order placement error:", error);
+    res.status(500).json({ success: false, message: "Error placing order" });
   }
 };
 
 const userOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({ userId: req.body.userId });
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const orders = await orderModel.find({ userId: req.user.id });
     res.json({ success: true, data: orders });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error" });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error fetching orders" });
   }
 };
+
 const listOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({});
     res.json({ success: true, data: orders });
   } catch (error) {
-    console.log(error);
-    res.json({
-      success: false,
-      message: "Error",
-    });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error fetching orders" });
   }
 };
 
 const updateStatus = async (req, res) => {
   try {
-    await orderModel.findByIdAndUpdate(req.body.orderId,{status:req.body.status})
-    res.json({
-      success:true,
-      message:"Status Updated"
-    })
+    await orderModel.findByIdAndUpdate(req.body.orderId, { status: req.body.status });
+    res.json({ success: true, message: "Status Updated" });
   } catch (error) {
-    console.log(error)
-    res.json({
-      success:false,
-      message:"Error"
-    })
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error updating status" });
   }
 };
 

@@ -13,6 +13,11 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = decoded; // Store user data for further requests
+
+    if (!req.user.id) {
+      return res.status(401).json({ success: false, message: "Invalid token: No user ID" });
+    }
+
     next();
   } catch (error) {
     console.error("JWT Error:", error);
